@@ -1,6 +1,91 @@
+html {
+  font-size: 18px;
+}
+
+body {
+  font-family: Tahoma, Geneva, Verdana, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 60vh;
+}
+
+button {
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+}
+
+input {
+  padding: 0.3rem;
+  min-width: 18rem;
+}
+
+.new-game-button.initial {
+  padding: 1rem 1.5rem;
+}
+
+.new-game-button:not(.initial) {
+  font-size: 0.9rem;
+}
+
+.user-inputs-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.fields {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.submit {
+  padding: 0.5rem 2.5rem;
+}
+
+.board-header {
+  min-height: 3rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.message-container {
+  font-size: 1.5rem;
+}
+
 .board {
   display: grid;
-  grid-template: repeat(3, 5rem) / repeat(3, 5rem);
+  grid-template: repeat(3, 20vh) / repeat(3, 20vh);
+  background-color: black;
+  border: 1px solid lightgray;
+  gap: 0.25rem;
+}
+
+.square {
+  border: none;
+  background-color: white;
+  font-size: 16vh;
+}
+
+.square:hover {
+  background-color: lightgray;
 }
 
 .hidden {

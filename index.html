@@ -4,27 +4,34 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="styles/normalize.css">
   <link rel="stylesheet" href="styles/index.css">
   <script defer src="scripts/tic-tac-toe.js"></script>
   <title>Tic-Tac-Toe</title>
 </head>
 <body>
   <h1>Let's play Tic-Tac-Toe!</h1>
-  <div class="user-inputs-container hidden">
-    <div class="field player-0-field">
-      <label for="player-0">Player 1 Name:</label>
-      <input type="text" id="player-0" name="player-0">
+  <main>
+    <div class="user-inputs-container hidden">
+      <div class="fields">
+        <div class="field player-0-field">
+          <label for="player-0">Player 1 Name</label>
+          <input type="text" id="player-0" name="player-0">
+        </div>
+        <div class="field player-1-field">
+          <label for="player-1">Player 2 Name</label>
+          <input type="text" id="player-1" name="player-1">
+        </div>
+      </div>
+      <button class="submit">Submit</button>
     </div>
-    <div class="field player-1-field">
-      <label for="player-1">Player 2 Name:</label>
-      <input type="text" id="player-1" name="player-1">
+    <div class="board-header">
+      <div class="message-container hidden">
+        <span class="message-recipient"></span> <span class="message"></span>
+      </div>
+      <button class="new-game-button initial">Start A New Game</button>
     </div>
-    <button class="submit">Submit</button>
-  </div>
-  <div class="message-container hidden">
-    <span class="message-recipient"></span> <span class="message"></span>
-  </div>
-  <button class="new-game-button">Start A New Game</button>
-  <div class="board hidden"></div>
+    <div class="board hidden"></div>
+  </main>
 </body>
 </html>

@@ -162,7 +162,7 @@ const ticTacToe = (function() {
 
   function _renderNewGameButton() {
     userInputsContainer.classList.add('hidden');
-    newGameButton.classList.remove('hidden');
+    newGameButton.classList.remove('hidden', 'initial');
   }
 
   function _renderUserInputs() {
