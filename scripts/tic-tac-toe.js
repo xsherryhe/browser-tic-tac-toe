@@ -15,15 +15,18 @@ const ticTacToe = (function() {
 
     function takeTurn(e) {
       //logic to update board and check for win here
-      _board.setSquare(e.target.dataset.index, _currPlayer().marker);
+      const successfulTurn = _board.setSquare(e.target.dataset.index, _currPlayer().marker);
+      if(!successfulTurn) return;
+
       _currPlayerInd ^= 1;
       render();
     }
 
     function render() {
-      userInputs.classList.add('hidden');
+      userInputsContainer.classList.add('hidden');
+      messageContainer.classList.remove('hidden');
       boardElement.classList.remove('hidden');
-      _currPlayer().renderTurnMessage();
+      _currPlayer().renderMessage();
       _board.renderSquares();
     }
 
@@ -33,13 +36,27 @@ const ticTacToe = (function() {
   function Board() {
     const _state = [...new Array(3)].map(_ => (new Array(3)).fill(null));
 
+    function _getSquare(index) {
+      return _state[Math.floor(index / 3)][index % 3];
+    }
+
+    function _renderSquareTakenMessage() {
+      messageElement.textContent = 'that square is already taken.';
+    }
+
     function setSquare(index, marker) {
+      if(_getSquare(index)) {
+        _renderSquareTakenMessage();
+        return false;
+      }
+
       _state[Math.floor(index / 3)][index % 3] = marker;
+      return true;
     }
 
     function renderSquares() {
       squareElements.forEach((squareElement, i) => {
-        squareElement.textContent = _state[Math.floor(i / 3)][i % 3];
+        squareElement.textContent = _getSquare(i);
       })
     }
 
@@ -49,26 +66,29 @@ const ticTacToe = (function() {
   function Player(marker, index) {
     //cache DOM
     const nameInputElement = document.querySelector(`.player-${index}-field input`),
-          messageElement = document.querySelector('.message');
+          messageRecipient = document.querySelector('.message-recipient');
 
     let _name;
     function setName() {
       _name = nameInputElement.value;
     }
 
-    function renderTurnMessage() {
-      messageElement.textContent = `${_name} (${marker}), it's your turn.`
+    function renderMessage() {
+      messageRecipient.textContent = `${_name} (${marker})`;
+      messageElement.textContent = "it's your turn."
     }
 
-    return { setName, renderTurnMessage, marker };
+    return { setName, renderMessage, marker };
   }
 
   //update and cache DOM
   const newGameButton = document.querySelector('.new-game-button'),
+        messageContainer = document.querySelector('.message-container'),
+        messageElement = document.querySelector('.message'),
         boardElement = document.querySelector('.board'),
         squareElements = _createInitialSquares(),
-        userInputs = document.querySelector('.user-inputs'),
-        userInputsSubmitButton = userInputs.querySelector('.submit');
+        userInputsContainer = document.querySelector('.user-inputs-container'),
+        userInputsSubmitButton = userInputsContainer.querySelector('.submit');
 
   //bind events
   newGameButton.addEventListener('click', startNewGame);
@@ -91,8 +111,8 @@ const ticTacToe = (function() {
   }
 
   function startNewGame() {
-    newGameButton?.classList?.add('hidden');
-    userInputs.classList.remove('hidden');
+    newGameButton.classList.add('hidden');
+    userInputsContainer.classList.remove('hidden');
     const newGame = Game();
     _bindGameEvents(newGame);
   }
