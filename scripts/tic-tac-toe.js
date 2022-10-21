@@ -46,7 +46,9 @@ const ticTacToe = (function() {
     }
 
     function checkGameOver() {
-      return _gameOver = _win() || _tie();
+      _gameOver = _win() || _tie();
+      if(_gameOver) _renderNewGameButton();
+      return _gameOver;
     }
 
     function _currPlayer() {
@@ -131,7 +133,7 @@ const ticTacToe = (function() {
     }
 
     function renderMessage(content) {
-      messageRecipientElement.textContent = `${_name || `Player ${index + 1}`} (${marker})`;
+      messageRecipientElement.textContent = `${_name || `Player ${index + 1}`} (${marker}),`;
       messageElement.textContent = content;
     }
 
@@ -156,6 +158,11 @@ const ticTacToe = (function() {
       boardElement.appendChild(squareElement);
       return squareElement;
     })
+  }
+
+  function _renderNewGameButton() {
+    userInputsContainer.classList.add('hidden');
+    newGameButton.classList.remove('hidden');
   }
 
   function _renderUserInputs() {
