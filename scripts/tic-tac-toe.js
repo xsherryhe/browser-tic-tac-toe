@@ -16,55 +16,94 @@ const ticTacToe = (function() {
   //declare factory functions
   function Game(markers = ['X', 'O']) {
     const _players = markers.map((marker, i) => Player(marker, i)),
-          _board = Board();
-    let _currPlayerInd = 0;
+          _board = Board(),
+          _boardState = _board.state;
+    let _currPlayerInd = 0,
+        _gameOver = false;
 
-    function _currPlayer() {
-      return _players[_currPlayerInd];
-    }
+    function takeTurn(val = Math.floor(Math.random() * 9)) {
+      if(_gameOver) return;
 
-    function setPlayerNames() {
-      _players.forEach(player => player.setName());
-    }
-
-    function takeTurn(e) {
-      //logic to update board and check for win here
-      const successfulTurn = _board.setSquare(e.target.dataset.index, _currPlayer().marker);
-      if(!successfulTurn) return;
+      const index = typeof val == 'number' ? val : val.target.dataset.index;
+      const successfulTurn = _board.setSquare(index, _currPlayer().marker);
+      if (!successfulTurn) return;
 
       _currPlayerInd ^= 1;
       render();
+      checkGameOver();
     }
 
     function render() {
       userInputsContainer.classList.add('hidden');
       messageContainer.classList.remove('hidden');
       boardElement.classList.remove('hidden');
-      _currPlayer().renderMessage();
+      _currPlayer().renderMessage("it's your turn.");
       _board.renderSquares();
     }
 
-    return { setPlayerNames, takeTurn, render };
+    function setPlayerNames() {
+      _players.forEach(player => player.setName());
+    }
+
+    function checkGameOver() {
+      return _gameOver = _win() || _tie();
+    }
+
+    function _currPlayer() {
+      return _players[_currPlayerInd];
+    }
+
+    function _oppPlayer() {
+      return _players[_currPlayerInd ^ 1];
+    }
+
+    function _win() {
+      const win = _rowWin() || _colWin() || _diagWin();
+      if(win) _oppPlayer().renderMessage('you have won!');
+      return win;
+    }
+
+    function _rowWin() {
+      return _boardState.some(row => row.every(space => _winningSpace(space)));
+    }
+
+    function _colWin() {
+      return _boardState.some((_, i) => _boardState.every(row => _winningSpace(row[i])));
+    }
+
+    function _diagWin() {
+      return _boardState.every((row, i) => _winningSpace(row[i])) || 
+             _boardState.every((row, i) => _winningSpace(row[2 - i]));
+    }
+
+    function _winningSpace(space) {
+      return space == _oppPlayer().marker;
+    }
+
+    function _tie() {
+      const tie = _boardState.every(row => row.every(space => space));
+      if(tie) _renderTieMessage();
+      return tie;
+    }
+
+    function _renderTieMessage() {
+      messageRecipientElement.textContent = '';
+      messageElement.textContent = 'The game ends with a tie.'
+    }
+
+    return { setPlayerNames, takeTurn, checkGameOver, render };
   }
 
   function Board() {
-    const _state = [...new Array(3)].map(_ => (new Array(3)).fill(null));
-
-    function _getSquare(index) {
-      return _state[Math.floor(index / 3)][index % 3];
-    }
-
-    function _renderSquareTakenMessage() {
-      messageElement.textContent = 'that square is already taken.';
-    }
+    const state = [...new Array(3)].map(_ => (new Array(3)).fill(null));
 
     function setSquare(index, marker) {
-      if(_getSquare(index)) {
+      if (_getSquare(index)) {
         _renderSquareTakenMessage();
         return false;
       }
 
-      _state[Math.floor(index / 3)][index % 3] = marker;
+      state[Math.floor(index / 3)][index % 3] = marker;
       return true;
     }
 
@@ -74,7 +113,15 @@ const ticTacToe = (function() {
       })
     }
 
-    return { setSquare, renderSquares };
+    function _getSquare(index) {
+      return state[Math.floor(index / 3)][index % 3];
+    }
+
+    function _renderSquareTakenMessage() {
+      messageElement.textContent = 'that square is already taken.';
+    }
+
+    return { state, setSquare, renderSquares };
   }
 
   function Player(marker, index) {
@@ -83,9 +130,9 @@ const ticTacToe = (function() {
       _name = nameInputElement(index).value;
     }
 
-    function renderMessage() {
-      messageRecipient.textContent = `${_name} (${marker})`;
-      messageElement.textContent = "it's your turn."
+    function renderMessage(content) {
+      messageRecipientElement.textContent = `${_name || `Player ${index + 1}`} (${marker})`;
+      messageElement.textContent = content;
     }
 
     return { setName, renderMessage, marker };
