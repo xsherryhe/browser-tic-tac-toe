@@ -1,4 +1,18 @@
 const ticTacToe = (function() {
+  //update and cache DOM
+  const newGameButton = document.querySelector('.new-game-button'),
+        messageContainer = document.querySelector('.message-container'),
+        messageRecipientElement = document.querySelector('.message-recipient'),
+        messageElement = document.querySelector('.message'),
+        boardElement = document.querySelector('.board'),
+        squareElements = _createInitialSquares(),
+        userInputsContainer = document.querySelector('.user-inputs-container'),
+        userInputsSubmitButton = userInputsContainer.querySelector('.submit'),
+        nameInputElement = index => document.querySelector(`.player-${index}-field input`);
+
+  //bind events
+  newGameButton.addEventListener('click', startNewGame);
+
   //declare factory functions
   function Game(markers = ['X', 'O']) {
     const _players = markers.map((marker, i) => Player(marker, i)),
@@ -64,13 +78,9 @@ const ticTacToe = (function() {
   }
 
   function Player(marker, index) {
-    //cache DOM
-    const nameInputElement = document.querySelector(`.player-${index}-field input`),
-          messageRecipient = document.querySelector('.message-recipient');
-
     let _name;
     function setName() {
-      _name = nameInputElement.value;
+      _name = nameInputElement(index).value;
     }
 
     function renderMessage() {
@@ -81,18 +91,15 @@ const ticTacToe = (function() {
     return { setName, renderMessage, marker };
   }
 
-  //update and cache DOM
-  const newGameButton = document.querySelector('.new-game-button'),
-        messageContainer = document.querySelector('.message-container'),
-        messageElement = document.querySelector('.message'),
-        boardElement = document.querySelector('.board'),
-        squareElements = _createInitialSquares(),
-        userInputsContainer = document.querySelector('.user-inputs-container'),
-        userInputsSubmitButton = userInputsContainer.querySelector('.submit');
+  //declare event listeners and public functions
+  function startNewGame() {
+    _renderUserInputs();
+    const newGame = Game();
+    _bindGameEvents(newGame);
+    return newGame;
+  }
 
-  //bind events
-  newGameButton.addEventListener('click', startNewGame);
-
+  //declare helper functions
   function _createInitialSquares() {
     return [...new Array(9)].map((_, i) => {
       const squareElement = document.createElement('button');
@@ -104,17 +111,17 @@ const ticTacToe = (function() {
     })
   }
 
+  function _renderUserInputs() {
+    newGameButton.classList.add('hidden');
+    messageContainer.classList.add('hidden');
+    boardElement.classList.add('hidden');
+    userInputsContainer.classList.remove('hidden');
+  }
+
   function _bindGameEvents(game) {
     userInputsSubmitButton.addEventListener('click', game.setPlayerNames);
     userInputsSubmitButton.addEventListener('click', game.render);
     squareElements.forEach(squareElement => squareElement.addEventListener('click', game.takeTurn));
-  }
-
-  function startNewGame() {
-    newGameButton.classList.add('hidden');
-    userInputsContainer.classList.remove('hidden');
-    const newGame = Game();
-    _bindGameEvents(newGame);
   }
 
   return { startNewGame };
