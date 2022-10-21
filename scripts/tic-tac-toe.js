@@ -5,29 +5,8 @@ const ticTacToe = (function() {
           _board = Board();
     let _currPlayerInd = 0;
 
-    //update and cache DOM
-    const userInputs = document.querySelector('.user-inputs'),
-          userInputsSubmitButton = userInputs.querySelector('.submit');
-    _renderUserInputs();
-
-    //bind events
-    userInputsSubmitButton.addEventListener('click', setPlayerNames);
-    userInputsSubmitButton.addEventListener('click', render);
-    squareElements.forEach(squareElement => squareElement.addEventListener('click', takeTurn));
-
-    function _renderUserInputs() {
-      userInputs.classList.remove('hidden');
-    }
-
     function _currPlayer() {
       return _players[_currPlayerInd];
-    }
-
-    function render() {
-      userInputs.classList.add('hidden');
-      boardElement.classList.remove('hidden');
-      _currPlayer().renderTurnMessage();
-      _board.renderSquares();
     }
 
     function setPlayerNames() {
@@ -41,7 +20,14 @@ const ticTacToe = (function() {
       render();
     }
 
-    return {};
+    function render() {
+      userInputs.classList.add('hidden');
+      boardElement.classList.remove('hidden');
+      _currPlayer().renderTurnMessage();
+      _board.renderSquares();
+    }
+
+    return { setPlayerNames, takeTurn, render };
   }
 
   function Board() {
@@ -80,10 +66,12 @@ const ticTacToe = (function() {
   //update and cache DOM
   const newGameButton = document.querySelector('.new-game-button'),
         boardElement = document.querySelector('.board'),
-        squareElements = _createInitialSquares();
+        squareElements = _createInitialSquares(),
+        userInputs = document.querySelector('.user-inputs'),
+        userInputsSubmitButton = userInputs.querySelector('.submit');
 
   //bind events
-  newGameButton.addEventListener('click', playGame);
+  newGameButton.addEventListener('click', startNewGame);
 
   function _createInitialSquares() {
     return [...new Array(9)].map((_, i) => {
@@ -96,10 +84,18 @@ const ticTacToe = (function() {
     })
   }
 
-  function playGame() {
-    newGameButton?.classList?.add('hidden');
-    const newGame = Game();
+  function _bindGameEvents(game) {
+    userInputsSubmitButton.addEventListener('click', game.setPlayerNames);
+    userInputsSubmitButton.addEventListener('click', game.render);
+    squareElements.forEach(squareElement => squareElement.addEventListener('click', game.takeTurn));
   }
 
-  return { playGame };
+  function startNewGame() {
+    newGameButton?.classList?.add('hidden');
+    userInputs.classList.remove('hidden');
+    const newGame = Game();
+    _bindGameEvents(newGame);
+  }
+
+  return { startNewGame };
 })()
