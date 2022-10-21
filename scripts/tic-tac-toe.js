@@ -1,64 +1,104 @@
 const ticTacToe = (function() {
   //declare factory functions
-  function Game() {
-    const _board = Board(),
-          _players = [...new Array(2)].map(_ => Player());
-    
-    //cache DOM
-    const squareElements = document.querySelectorAll('.square');
+  function Game(markers = ['X', 'O']) {
+    const _players = markers.map((marker, i) => Player(marker, i)),
+          _board = Board();
+    let _currPlayerInd = 0;
+
+    //update and cache DOM
+    const userInputs = document.querySelector('.user-inputs'),
+          userInputsSubmitButton = userInputs.querySelector('.submit');
+    _renderUserInputs();
 
     //bind events
+    userInputsSubmitButton.addEventListener('click', setPlayerNames);
+    userInputsSubmitButton.addEventListener('click', render);
     squareElements.forEach(squareElement => squareElement.addEventListener('click', takeTurn));
 
-    function takeTurn() {
-      //logic to update board and check for win here
+    function _renderUserInputs() {
+      userInputs.classList.remove('hidden');
     }
 
-    return { takeTurn };
+    function _currPlayer() {
+      return _players[_currPlayerInd];
+    }
+
+    function render() {
+      userInputs.classList.add('hidden');
+      boardElement.classList.remove('hidden');
+      _currPlayer().renderTurnMessage();
+      _board.renderSquares();
+    }
+
+    function setPlayerNames() {
+      _players.forEach(player => player.setName());
+    }
+
+    function takeTurn(e) {
+      //logic to update board and check for win here
+      _board.setSquare(e.target.dataset.index, _currPlayer().marker);
+      _currPlayerInd ^= 1;
+      render();
+    }
+
+    return {};
   }
 
   function Board() {
-    const contents = [...new Array(3)].map(_ => (new Array(3)).fill(null));
+    const _state = [...new Array(3)].map(_ => (new Array(3)).fill(null));
 
-    //update DOM
-    _renderInitial();
-
-    function _renderInitial() {
-      const boardElement = document.createElement('div');
-      boardElement.classList.add('board');
-      for (let i = 0; i < 9; i++) 
-        boardElement.appendChild(_renderInitialSquare(i));
-      document.body.appendChild(boardElement);
-      return boardElement;
+    function setSquare(index, marker) {
+      _state[Math.floor(index / 3)][index % 3] = marker;
     }
 
-    function _renderInitialSquare(index) {
-      const squareElement = document.createElement('button');
-      squareElement.classList.add('square');
-      squareElement.dataset.index = index;
-      squareElement.textContent = ' ';
-      return squareElement;
+    function renderSquares() {
+      squareElements.forEach((squareElement, i) => {
+        squareElement.textContent = _state[Math.floor(i / 3)][i % 3];
+      })
     }
 
-    function renderSquare() {
-    }
-
-    return { };
+    return { setSquare, renderSquares };
   }
 
-  function Player() {
+  function Player(marker, index) {
+    //cache DOM
+    const nameInputElement = document.querySelector(`.player-${index}-field input`),
+          messageElement = document.querySelector('.message');
 
+    let _name;
+    function setName() {
+      _name = nameInputElement.value;
+    }
+
+    function renderTurnMessage() {
+      messageElement.textContent = `${_name} (${marker}), it's your turn.`
+    }
+
+    return { setName, renderTurnMessage, marker };
   }
 
-  //cache DOM
-  const newGameButton = document.querySelector('.new-game-button');
+  //update and cache DOM
+  const newGameButton = document.querySelector('.new-game-button'),
+        boardElement = document.querySelector('.board'),
+        squareElements = _createInitialSquares();
 
   //bind events
   newGameButton.addEventListener('click', playGame);
 
+  function _createInitialSquares() {
+    return [...new Array(9)].map((_, i) => {
+      const squareElement = document.createElement('button');
+      squareElement.classList.add('square');
+      squareElement.dataset.index = i;
+      squareElement.textContent = ' ';
+      boardElement.appendChild(squareElement);
+      return squareElement;
+    })
+  }
+
   function playGame() {
-    newGameButton?.remove();
-    const currentGame = Game();
+    newGameButton?.classList?.add('hidden');
+    const newGame = Game();
   }
 
   return { playGame };
