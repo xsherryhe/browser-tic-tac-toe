@@ -1,5 +1,3 @@
-//TO DO: Pass dependencies/arguments instead of using call(this)
-
 const ticTacToe = (function() {
   //update and cache DOM
   const newGameButtons = document.querySelectorAll('.new-game'),
@@ -62,32 +60,32 @@ const ticTacToe = (function() {
     }
 
     function checkGameOver() {
-      _gameOver = _win.call(this) || _tie();
+      _gameOver = _win(this.oppPlayer()) || _tie();
       if(_gameOver) _renderResetGameButton();
       return _gameOver;
     }
 
-    function _win() {
-      const win = _rowWin.call(this) || _colWin.call(this) || _diagWin.call(this);
-      if(win) _renderWinMessage(this.oppPlayer());
+    function _win(player) {
+      const win = _rowWin(player)|| _colWin(player) || _diagWin(player);
+      if(win) _renderWinMessage(player);
       return win;
     }
 
-    function _rowWin() {
-      return _boardState.some(row => row.every(space => _winningSpace.call(this, space)));
+    function _rowWin(player) {
+      return _boardState.some(row => row.every(space => _winningSpace(space, player)));
     }
 
-    function _colWin() {
-      return _boardState.some((_, i) => _boardState.every(row => _winningSpace.call(this, row[i])));
+    function _colWin(player) {
+      return _boardState.some((_, i) => _boardState.every(row => _winningSpace(row[i], player)));
     }
 
-    function _diagWin() {
-      return _boardState.every((row, i) => _winningSpace.call(this, row[i])) || 
-             _boardState.every((row, i) => _winningSpace.call(this, row[2 - i]));
+    function _diagWin(player) {
+      return _boardState.every((row, i) => _winningSpace(row[i], player)) || 
+             _boardState.every((row, i) => _winningSpace(row[2 - i], player));
     }
 
-    function _winningSpace(space) {
-      return space == this.oppPlayer().marker;
+    function _winningSpace(space, player) {
+      return space == player.marker;
     }
 
     function _tie() {
