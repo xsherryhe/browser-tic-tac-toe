@@ -16,7 +16,16 @@
       <button class="new-game" data-type="computer">New Game (vs. Computer)</button>
       <button class="new-game" data-type="human">New Game (2 Players)</button>
     </div>
-    <div class="user-inputs-container human hidden">
+    <div class="user-inputs-container hidden" data-type="computer">
+      <div class="fields">
+        <div class="field player-single-field">
+          <label for="player-single">Player Name</label>
+          <input type="text" id="player-single" name="player-single">
+        </div>
+      </div>
+      <button class="submit">Submit</button>
+    </div>
+    <div class="user-inputs-container hidden" data-type="human">
       <div class="fields">
         <div class="field player-0-field">
           <label for="player-0">Player 1 (X) Name</label>
@@ -25,15 +34,6 @@
         <div class="field player-1-field">
           <label for="player-1">Player 2 (O) Name</label>
           <input type="text" id="player-1" name="player-1">
-        </div>
-      </div>
-      <button class="submit">Submit</button>
-    </div>
-    <div class="user-inputs-container computer hidden">
-      <div class="fields">
-        <div class="field player-single-field">
-          <label for="player-single">Player Name</label>
-          <input type="text" id="player-single" name="player-single">
         </div>
       </div>
       <button class="submit">Submit</button>
