@@ -12,7 +12,11 @@
 <body>
   <h1>Let's play Tic-Tac-Toe!</h1>
   <main>
-    <div class="user-inputs-container hidden">
+    <div class="new-game-buttons">
+      <button class="new-game" data-type="computer">New Game (vs. Computer)</button>
+      <button class="new-game" data-type="human">New Game (2 Players)</button>
+    </div>
+    <div class="user-inputs-container human hidden">
       <div class="fields">
         <div class="field player-0-field">
           <label for="player-0">Player 1 Name</label>
@@ -25,11 +29,24 @@
       </div>
       <button class="submit">Submit</button>
     </div>
+    <div class="user-inputs-container computer hidden">
+      <div class="fields">
+        <div class="field player-single-field">
+          <label for="player-single">Player Name</label>
+          <input type="text" id="player-single" name="player-single">
+        </div>
+      </div>
+      <button class="submit">Submit</button>
+    </div>
+    <div class="info-container hidden">
+      <div class="info"></div>
+      <button class="continue">Continue</button>
+    </div>
     <div class="board-header">
       <div class="message-container hidden">
         <span class="message-recipient"></span> <span class="message"></span>
       </div>
-      <button class="new-game-button initial">Start A New Game</button>
+      <button class="reset-game hidden">Start A New Game</button>
     </div>
     <div class="board hidden"></div>
   </main>

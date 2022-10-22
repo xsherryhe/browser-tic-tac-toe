@@ -28,12 +28,8 @@ input {
   min-width: 18rem;
 }
 
-.new-game-button.initial {
+.new-game {
   padding: 1rem 1.5rem;
-}
-
-.new-game-button:not(.initial) {
-  font-size: 0.9rem;
 }
 
 .user-inputs-container {
@@ -64,6 +60,10 @@ input {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+}
+
+.reset-game {
+  font-size: 0.9rem;
 }
 
 .message-container {

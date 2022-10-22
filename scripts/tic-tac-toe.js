@@ -1,85 +1,93 @@
+//TO DO: Pass dependencies/arguments instead of using call(this)
+
 const ticTacToe = (function() {
   //update and cache DOM
-  const newGameButton = document.querySelector('.new-game-button'),
+  const newGameButtons = document.querySelectorAll('.new-game'),
+        resetGameButton = document.querySelector('.reset-game'),
+        infoContainer = document.querySelector('.info-container'),
+        infoElement = infoContainer.querySelector('.info'),
+        infoContinueButton = infoContainer.querySelector('.continue'),
         messageContainer = document.querySelector('.message-container'),
         messageRecipientElement = document.querySelector('.message-recipient'),
         messageElement = document.querySelector('.message'),
         boardElement = document.querySelector('.board'),
         squareElements = _createInitialSquares(),
-        userInputsContainer = document.querySelector('.user-inputs-container'),
-        userInputsSubmitButton = userInputsContainer.querySelector('.submit'),
-        nameInputElement = index => document.querySelector(`.player-${index}-field input`);
+        userInputsContainers = document.querySelectorAll('.user-inputs-container'),
+        userInputsContainer = type => document.querySelector(`.user-inputs-container.${type}`),
+        userInputsSubmitButton = type => document.querySelector(`.user-inputs-container.${type} .submit`),
+        nameInputElement = selector => document.querySelector(`.player-${selector}-field input`);
 
   //bind events
-  newGameButton.addEventListener('click', startNewGame);
+  newGameButtons.forEach(button => button.addEventListener('click', startNewGame));
+  resetGameButton.addEventListener('click', selectNewGame);
 
   //declare factory functions
-  function Game(markers = ['X', 'O']) {
-    const _players = markers.map((marker, i) => Player(marker, i)),
-          _board = Board(),
-          _boardState = _board.state;
-    let _currPlayerInd = 0,
-        _gameOver = false;
+  function Game() {
+    const _board = Board(), _boardState = _board.state;
+    let _currPlayerInd = 0, _gameOver = false;
 
-    function takeTurn(val = Math.floor(Math.random() * 9)) {
+    async function takeTurn(info = _boardState) {
       if(_gameOver) return;
 
-      const index = typeof val == 'number' ? val : val.target.dataset.index;
-      const successfulTurn = _board.setSquare(index, _currPlayer().marker);
-      if (!successfulTurn) return;
+      const index = await this.currPlayer().selectSquare(info);
+      const successfulTurn = _board.setSquare(index, this.currPlayer().marker);
+      if(!successfulTurn) return;
 
       _currPlayerInd ^= 1;
-      render();
-      checkGameOver();
-    }
-
-    function render() {
-      userInputsContainer.classList.add('hidden');
-      messageContainer.classList.remove('hidden');
-      boardElement.classList.remove('hidden');
-      _currPlayer().renderMessage("it's your turn.");
-      _board.renderSquares();
+      this.render();
+      this.checkGameOver();
+      if(this.currPlayer().type == 'computer') this.takeTurn();
     }
 
     function setPlayerNames() {
-      _players.forEach(player => player.setName());
+      this.players.forEach(player => player.setName());
+    }
+
+    function currPlayer() {
+      return this.players[_currPlayerInd];
+    }
+
+    function oppPlayer() {
+      return this.players[_currPlayerInd ^ 1];
+    }
+
+    function renderSetUp() {
+      _renderPageElements(userInputsContainer(this.type));
+    }
+
+    function render() {
+      _renderPageElements(messageContainer, boardElement);
+      this.currPlayer().renderTurnMessage();
+      _board.renderSquares();
     }
 
     function checkGameOver() {
-      _gameOver = _win() || _tie();
-      if(_gameOver) _renderNewGameButton();
+      _gameOver = _win.call(this) || _tie();
+      if(_gameOver) _renderResetGameButton();
       return _gameOver;
     }
 
-    function _currPlayer() {
-      return _players[_currPlayerInd];
-    }
-
-    function _oppPlayer() {
-      return _players[_currPlayerInd ^ 1];
-    }
-
     function _win() {
-      const win = _rowWin() || _colWin() || _diagWin();
-      if(win) _oppPlayer().renderMessage('you have won!');
+      const win = _rowWin.call(this) || _colWin.call(this) || _diagWin.call(this);
+      if(win) _renderWinMessage(this.oppPlayer());
       return win;
     }
 
     function _rowWin() {
-      return _boardState.some(row => row.every(space => _winningSpace(space)));
+      return _boardState.some(row => row.every(space => _winningSpace.call(this, space)));
     }
 
     function _colWin() {
-      return _boardState.some((_, i) => _boardState.every(row => _winningSpace(row[i])));
+      return _boardState.some((_, i) => _boardState.every(row => _winningSpace.call(this, row[i])));
     }
 
     function _diagWin() {
-      return _boardState.every((row, i) => _winningSpace(row[i])) || 
-             _boardState.every((row, i) => _winningSpace(row[2 - i]));
+      return _boardState.every((row, i) => _winningSpace.call(this, row[i])) || 
+             _boardState.every((row, i) => _winningSpace.call(this, row[2 - i]));
     }
 
     function _winningSpace(space) {
-      return space == _oppPlayer().marker;
+      return space == this.oppPlayer().marker;
     }
 
     function _tie() {
@@ -93,7 +101,63 @@ const ticTacToe = (function() {
       messageElement.textContent = 'The game ends with a tie.'
     }
 
-    return { setPlayerNames, takeTurn, checkGameOver, render };
+    function _renderWinMessage(player) {
+      messageRecipientElement.textContent = '';
+      messageElement.textContent = `${player.name} has won!`;
+    }
+
+    return { setPlayerNames, currPlayer, oppPlayer, takeTurn, checkGameOver, renderSetUp, render };
+  }
+
+  function ComputerGame(markers = ['X', 'O']) {
+    const prototype = Game();
+
+    let players;
+    _initializePlayers();
+
+    function _initializePlayers() {
+      const playerFactories = [[ComputerPlayer, HumanPlayer], [HumanPlayer, ComputerPlayer]]
+                              [Math.floor(Math.random() * 2)];
+      players = markers.map((marker, i) => playerFactories[i](marker, i, 'single'));
+    }
+
+    function renderInfo() {
+      _renderPageElements(infoContainer);
+      infoElement.textContent = '';
+      const [p1, p2] = [...new Array(2)].map(_ => document.createElement('p'));
+      p1.textContent = 'By random determination:';
+      p2.textContent = 'X always goes first!';
+      infoElement.appendChild(p1);
+      this.players.forEach((player) => {
+        const playerRoleElement = document.createElement('p');
+        playerRoleElement.textContent =
+          `${player.type == 'computer' ? 'The Computer is' : 'You are'} the ${player.marker} player.`
+        infoElement.appendChild(playerRoleElement);
+      })
+      infoElement.appendChild(p2);
+    }
+
+    function initialize() {
+      this.render();
+      if(this.currPlayer().type == 'computer') this.takeTurn();
+    }
+
+    return Object.assign({ type: 'computer', players, initialize, renderInfo }, prototype);
+  }
+
+  function HumanGame(markers = ['X', 'O']) {
+    const prototype = Game();
+    const players = markers.map((marker, i) => HumanPlayer(marker, i));
+
+    function renderInfo() {
+      this.initialize();
+    }
+
+    function initialize() {
+      this.render();
+    }
+
+    return Object.assign({ type: 'human', players, initialize, renderInfo }, prototype);
   }
 
   function Board() {
@@ -126,25 +190,74 @@ const ticTacToe = (function() {
     return { state, setSquare, renderSquares };
   }
 
-  function Player(marker, index) {
-    let _name;
+  function Player(marker) {
+    function autoSelectSquare(boardState) {
+      const availableIndexes = boardState.reduce((indexes, row, i) => {
+        row.forEach((square, j) => {
+          if(!square) indexes.push(i * 3 + j);
+        })
+        return indexes;
+      }, [])
+      return availableIndexes[Math.floor(Math.random() * availableIndexes.length)];
+    }
+
+    return { marker, autoSelectSquare };
+  }
+
+  function ComputerPlayer(marker) {
+    const prototype = Player(marker);
+    const name = 'The Computer';
+
+    async function selectSquare(info) {
+      await new Promise(r => setTimeout(r, 1000));
+      return this.autoSelectSquare(info);
+    }
+
     function setName() {
-      _name = nameInputElement(index).value;
+      //do nothing
     }
 
-    function renderMessage(content) {
-      messageRecipientElement.textContent = `${_name || `Player ${index + 1}`} (${marker}),`;
-      messageElement.textContent = content;
+    function renderTurnMessage() {
+      messageRecipientElement.textContent = '';
+      messageElement.textContent = `The Computer (${this.marker}) is taking its turn...`;
     }
 
-    return { setName, renderMessage, marker };
+    return Object.assign({ type: 'computer', name, setName, selectSquare, renderTurnMessage }, prototype);
+  }
+
+  function HumanPlayer(marker, index, nameInputSelector = index) {
+    const prototype = Player(marker);
+    const name = `Player ${index + 1}`;
+
+    function setName() {
+      this.name = nameInputElement(nameInputSelector).value || this.name;
+    }
+
+    function selectSquare(info) {
+      if(Array.isArray(info))
+        return this.autoSelectSquare(info);
+      
+      return info.target.dataset.index;
+    }
+
+    function renderTurnMessage() {
+      messageRecipientElement.textContent = `${this.name} (${marker}),`;
+      messageElement.textContent = "it's your turn.";
+    }
+
+    return Object.assign({ type: 'human', name, setName, selectSquare, renderTurnMessage }, prototype);
   }
 
   //declare event listeners and public functions
-  function startNewGame() {
-    _renderUserInputs();
-    const newGame = Game();
+  function selectNewGame() {
+    _renderNewGameButtons();
+  }
+
+  function startNewGame(val = 'computer') {
+    const type = typeof val == 'string' ? val : val.target.dataset.type,
+          newGame = type == 'computer' ? ComputerGame() : HumanGame();
     _bindGameEvents(newGame);
+    newGame.renderSetUp();
     return newGame;
   }
 
@@ -160,23 +273,34 @@ const ticTacToe = (function() {
     })
   }
 
-  function _renderNewGameButton() {
-    userInputsContainer.classList.add('hidden');
-    newGameButton.classList.remove('hidden', 'initial');
+  function _renderNewGameButtons() {
+    _renderPageElements(...newGameButtons);
   }
 
-  function _renderUserInputs() {
-    newGameButton.classList.add('hidden');
-    messageContainer.classList.add('hidden');
-    boardElement.classList.add('hidden');
-    userInputsContainer.classList.remove('hidden');
+  function _renderResetGameButton() {
+    resetGameButton.classList.remove('hidden');
+  }
+
+  function _renderPageElements(...elements) {
+    _hideAllExcept(...elements);
+    elements.forEach(element => element.classList.remove('hidden'));
+  }
+
+  function _hideAllExcept(...elements) {
+    [...newGameButtons, ...userInputsContainers, resetGameButton, 
+     infoContainer, messageContainer, boardElement].forEach(element => {
+      if(!elements.includes(element))
+        element.classList.add('hidden');
+    })
   }
 
   function _bindGameEvents(game) {
-    userInputsSubmitButton.addEventListener('click', game.setPlayerNames);
-    userInputsSubmitButton.addEventListener('click', game.render);
-    squareElements.forEach(squareElement => squareElement.addEventListener('click', game.takeTurn));
+    const inputSubmitButton = userInputsSubmitButton(game.type);
+    inputSubmitButton.addEventListener('click', game.setPlayerNames.bind(game));
+    inputSubmitButton.addEventListener('click', game.renderInfo.bind(game));
+    infoContinueButton.addEventListener('click', game.initialize.bind(game));
+    squareElements.forEach(squareElement => squareElement.addEventListener('click', game.takeTurn.bind(game)));
   }
 
-  return { startNewGame };
+  return { selectNewGame, startNewGame };
 })()
