@@ -22,33 +22,33 @@ function ComputerPlayer(marker) {
 
   async function selectSquare(info) {
     await new Promise(r => setTimeout(r, 1000));
-    return _selectOptimizedSquare(info);
+    //easy mode
     //return this.autoSelectSquare(info);
+    return _selectOptimizedSquare(info);
   }
 
   function _selectOptimizedSquare(board) {
     const indexesWithBoardValues = 
       board.availableIndexes().map(index => {
-        return { index, boardVal: _nextBoardValue(board, index, board.markers.indexOf(marker)) };
+        return { index, boardVal: _boardValue(board, index, board.markers.indexOf(marker)) };
       })
-    console.log(indexesWithBoardValues)
     return indexesWithBoardValues.sort((a, b) => b.boardVal - a.boardVal)[0].index;
   }
 
-  function _boardValue(board, currMarkerInd) {
-    if (gameConditions.win(marker, board)) return 1;
-    if (gameConditions.lose(marker, board)) return -1;
-    if (gameConditions.tie(board)) return 0;
-
-    const nextMarkerInd = currMarkerInd ^ 1,
-          nextBoardValues = board.availableIndexes().map(index => _nextBoardValue(board, index, nextMarkerInd));
-    return board.markers[nextMarkerInd] == marker ? Math.max(...nextBoardValues) : Math.min(...nextBoardValues);
-  }
-
-  function _nextBoardValue(board, index, currMarkerInd) {
+  function _boardValue(board, index, currMarkerInd) {
     const nextBoard = Board(board.markers, [...board.state.map(row => [...row])]);
     nextBoard.setSquare(index, board.markers[currMarkerInd]);
-    return _boardValue(nextBoard, currMarkerInd);
+
+    if (gameConditions.win(marker, nextBoard)) return 1;
+    if (gameConditions.lose(marker, nextBoard)) return -1;
+    if (gameConditions.tie(nextBoard)) return 0;
+
+    const nextMarkerInd = currMarkerInd ^ 1,
+          nextBoardValues = nextBoard.availableIndexes().map(nextIndex => _boardValue(nextBoard, nextIndex, nextMarkerInd));
+    //normal mode
+    //return nextBoardValues.reduce((a, b) => a + b, 0) / nextBoardValues.length;
+    //hard mode
+    return board.markers[nextMarkerInd] == marker ? Math.max(...nextBoardValues) : Math.min(...nextBoardValues);
   }
 
   return Object.assign({ type: 'computer', name, setName, messageRecipient, turnMessage, selectSquare }, prototype);
