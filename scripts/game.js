@@ -1,8 +1,8 @@
-function Game() {
-  const board = Board(), _boardState = board.state;
+function Game(markers = ['X', 'O']) {
+  const board = Board(markers);
   let _currPlayerInd = 0, _gameOver = false;
 
-  async function takeTurn(info = _boardState) {
+  async function takeTurn(info = board) {
     if (_gameOver) return;
 
     const index = await this.currPlayer().selectSquare(info);
@@ -28,45 +28,20 @@ function Game() {
   }
 
   function checkGameOver() {
-    _gameOver = _win(this.oppPlayer()) || _tie();
+    const win = gameConditions.win(this.oppPlayer().marker, board),
+          tie = gameConditions.tie(board);
+    _gameOver = win || tie;
+    if (tie) display.renderTieMessage();
+    if (win) display.renderWinMessage(this.oppPlayer());
     if (_gameOver) display.renderResetGame();
     return _gameOver;
-  }
-
-  function _win(player) {
-    const win = _rowWin(player) || _colWin(player) || _diagWin(player);
-    if (win) display.renderWinMessage(player);
-    return win;
-  }
-
-  function _rowWin(player) {
-    return _boardState.some(row => row.every(space => _winningSpace(space, player)));
-  }
-
-  function _colWin(player) {
-    return _boardState.some((_, i) => _boardState.every(row => _winningSpace(row[i], player)));
-  }
-
-  function _diagWin(player) {
-    return _boardState.every((row, i) => _winningSpace(row[i], player)) ||
-      _boardState.every((row, i) => _winningSpace(row[2 - i], player));
-  }
-
-  function _winningSpace(space, player) {
-    return space == player.marker;
-  }
-
-  function _tie() {
-    const tie = _boardState.every(row => row.every(space => space));
-    if (tie) display.renderTieMessage();
-    return tie;
   }
 
   return { board, setPlayerNames, currPlayer, oppPlayer, takeTurn, checkGameOver };
 }
 
 function ComputerGame(markers = ['X', 'O']) {
-  const prototype = Game();
+  const prototype = Game(markers);
 
   let players;
   _initializePlayers();
@@ -91,7 +66,7 @@ function ComputerGame(markers = ['X', 'O']) {
 }
 
 function HumanGame(markers = ['X', 'O']) {
-  const prototype = Game();
+  const prototype = Game(markers);
   const players = markers.map((marker, i) => HumanPlayer(marker, i));
 
   function setUp() {
