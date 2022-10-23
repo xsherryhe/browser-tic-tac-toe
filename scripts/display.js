@@ -12,6 +12,7 @@ const display = (function () {
         boardElement = document.querySelector('.board'),
         squareElements = _createInitialSquares(),
         userInputsContainers = document.querySelectorAll('.user-inputs-container'),
+        userInputsSubmitButtons = document.querySelectorAll('.user-inputs-container .submit'),
         userInputsSubmitButton = type => document.querySelector(`.user-inputs-container[data-type=${type}] .submit`),
         nameInputElement = selector => document.querySelector(`.player-${selector}-field input`);
 
@@ -109,7 +110,7 @@ const display = (function () {
   }
 
   return { newGameButtons, resetButton, resetGameButton, infoContinueButton,
-           squareElements, userInputsSubmitButton, nameInputElement,
+           squareElements, userInputsSubmitButtons, userInputsSubmitButton, nameInputElement,
            renderNewGameButtons, renderGameSetUp, renderGameInfo, renderGame, renderResetGame,
            renderSquareTakenMessage, renderWinMessage, renderTieMessage };
 })()

@@ -17,6 +17,8 @@ const ticTacToe = (function() {
 
 const events = (function () {
   //bind events
+  let _gameEvents = {};
+  
   function _bindInitial() {
     display.newGameButtons.forEach(button => button.addEventListener('click', ticTacToe.startNewGame.bind(ticTacToe)));
     ['resetButton', 'resetGameButton'].forEach(button => 
@@ -25,10 +27,18 @@ const events = (function () {
   _bindInitial();
 
   function bindForGame(game) {
-    const inputSubmitButton = display.userInputsSubmitButton(game.type);
-    inputSubmitButton.addEventListener('click', game.setUp.bind(game));
-    display.infoContinueButton.addEventListener('click', game.initialize.bind(game));
-    display.squareElements.forEach(squareElement => squareElement.addEventListener('click', game.takeTurn.bind(game)));
+    _removePreviousGame();
+    ['setUp', 'initialize', 'takeTurn'].forEach(fn => _gameEvents[fn] = game[fn].bind(game));
+    display.userInputsSubmitButton(game.type).addEventListener('click', _gameEvents.setUp);
+    display.infoContinueButton.addEventListener('click', _gameEvents.initialize);
+    display.squareElements.forEach(squareElement => squareElement.addEventListener('click', _gameEvents.takeTurn));
+  }
+
+  function _removePreviousGame() {
+    display.userInputsSubmitButtons.forEach(button => button.removeEventListener('click', _gameEvents.setUp));
+    display.infoContinueButton.removeEventListener('click', _gameEvents.initialize);
+    display.squareElements.forEach(squareElement => squareElement.removeEventListener('click', _gameEvents.takeTurn));
+    _gameEvents = {};
   }
 
   return { bindForGame };
