@@ -3,9 +3,10 @@ const ticTacToe = (function() {
     display.renderNewGameButtons();
   }
 
-  function startNewGame(val = 'computer') {
-    const type = typeof val == 'string' ? val : val.target.dataset.type,
-          newGame = type == 'computer' ? ComputerGame() : HumanGame();
+  function startNewGame(val = 'computer', modeVal = 'hard') {
+    const [type, mode] = 
+      typeof val == 'string' ? [val, modeVal] : ['type', 'mode'].map(attr => val.target.dataset[attr]);
+    const newGame = type == 'computer' ? ComputerGame(mode) : HumanGame();
     events.bindForGame(newGame);
     display.renderGameSetUp(newGame);
     return newGame;

@@ -7,10 +7,10 @@ function Player(marker) {
   return { marker, autoSelectSquare };
 }
 
-function ComputerPlayer(marker) {
+function ComputerPlayer(marker, mode) {
   const prototype = Player(marker);
-  const name = 'The Computer',
-    turnMessage = `The Computer (${marker}) is taking its turn...`
+  const name = `${mode == 'easy' ? 'Randy' : 'Hardy'} the Computer`,
+        turnMessage = `${name} (${marker}) is taking its turn...`;
 
   function setName() {
     //do nothing
@@ -22,9 +22,7 @@ function ComputerPlayer(marker) {
 
   async function selectSquare(info) {
     await new Promise(r => setTimeout(r, 1000));
-    //easy mode
-    //return this.autoSelectSquare(info);
-    return _selectOptimizedSquare(info);
+    return mode == 'easy' ? this.autoSelectSquare(info) : _selectOptimizedSquare(info);
   }
 
   function _selectOptimizedSquare(board) {

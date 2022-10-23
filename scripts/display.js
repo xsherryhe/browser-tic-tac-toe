@@ -32,7 +32,7 @@ const display = (function () {
     game.players.forEach((player) => {
       const playerRoleElement = document.createElement('p');
       playerRoleElement.textContent =
-        `${player.type == 'computer' ? 'The Computer is' : 'You are'} the ${player.marker} player.`
+        `${player.type == 'computer' ? `${player.name} is` : 'You are'} the ${player.marker} player.`
       infoElement.appendChild(playerRoleElement);
     })
     infoElement.appendChild(p2);

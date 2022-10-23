@@ -40,7 +40,7 @@ function Game(markers = ['X', 'O']) {
   return { board, setPlayerNames, currPlayer, oppPlayer, takeTurn, checkGameOver };
 }
 
-function ComputerGame(markers = ['X', 'O']) {
+function ComputerGame(level, markers = ['X', 'O']) {
   const prototype = Game(markers);
 
   let players;
@@ -49,7 +49,11 @@ function ComputerGame(markers = ['X', 'O']) {
   function _initializePlayers() {
     const playerFactories = [[ComputerPlayer, HumanPlayer], [HumanPlayer, ComputerPlayer]]
     [Math.floor(Math.random() * 2)];
-    players = markers.map((marker, i) => playerFactories[i](marker, i, 'single'));
+    players = markers.map((marker, i) => {
+      const playerFactory = playerFactories[i];
+      return playerFactory == ComputerPlayer ? playerFactory(marker, level)
+                                             : playerFactory(marker, i, 'single');
+    });
   }
 
   function setUp() {
