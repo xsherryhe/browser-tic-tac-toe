@@ -1,9 +1,35 @@
+@keyframes change-bg-color {
+  from {
+    background-color: var(--background-color);
+  }
+
+  33% {
+    background-color: var(--tertiary-color);
+  }
+
+  66% {
+    background-color: var(--secondary-color);
+  }
+}
+
+:root {
+  --background-color: #062f4f;
+  --light-background-color: #11619e;
+  --secondary-color: #813772;
+  --light-secondary-color: #a94b94;
+  --tertiary-color: #b82601;
+  --light-tertiary-color: #da2e03;
+}
+
 html {
   font-size: 18px;
 }
 
 body {
   font-family: Tahoma, Geneva, Verdana, sans-serif;
+  color: white;
+  min-height: 100vh;
+  background-color: black;
 }
 
 header {
@@ -11,7 +37,14 @@ header {
   grid-template-columns: 1fr max-content 1fr;
   justify-items: start;
   align-items: center;
-  padding: 0.5rem 1.5rem;
+  padding: 0 1.5rem;
+  background-color: var(--background-color);
+  border-bottom: 3px solid white;
+  gap: 1rem;
+}
+
+header.no-theme {
+  animation: change-bg-color 9s steps(2, jump-none) infinite;
 }
 
 header h1 {
@@ -23,8 +56,7 @@ main {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 0.5rem;
-  min-height: 60vh;
+  min-height: 70vh;
 }
 
 p {
@@ -34,6 +66,14 @@ p {
 button {
   cursor: pointer;
   padding: 0.5rem 1rem;
+  border: 3px solid white;
+  color: white;
+  background-color: rgba(0, 0, 0, 0);
+}
+
+button:hover {
+  background-color: white;
+  color: black;
 }
 
 input {
@@ -49,6 +89,35 @@ input {
 
 .new-game {
   padding: 1rem 1.5rem;
+  font-size: 1.2rem;
+}
+
+.new-game:hover {
+  color: white;
+}
+
+.new-game[data-mode='easy'], .easy:not(.square) {
+  background-color: var(--background-color);
+}
+
+.new-game[data-mode='easy']:hover {
+  background-color: var(--light-background-color);
+}
+
+.new-game[data-mode='hard'], .hard:not(.square) {
+  background-color: var(--tertiary-color);
+}
+
+.new-game[data-mode='hard']:hover {
+  background-color: var(--light-tertiary-color);
+}
+
+.new-game[data-type='human'], .human:not(.square) {
+  background-color: var(--secondary-color);
+}
+
+.new-game[data-type='human']:hover {
+  background-color: var(--light-secondary-color);
 }
 
 .user-inputs-container {
@@ -56,6 +125,8 @@ input {
   flex-direction: column;
   align-items: center;
   gap: 1.5rem;
+  border: 3px solid white;
+  padding: 1rem;
 }
 
 .fields {
@@ -75,8 +146,7 @@ input {
 }
 
 .info-container {
-  box-shadow: 0 0 5px black;
-  border-radius: 0.2rem;
+  border: 3px solid white;
   padding: 1rem 2rem;
   display: flex;
   flex-direction: column;
@@ -104,10 +174,11 @@ input {
 }
 
 .board-header {
+  margin-top: 1rem;
   min-height: 3rem;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 1rem;
 }
 
 .reset-game {
@@ -121,15 +192,37 @@ input {
 .board {
   display: grid;
   grid-template: repeat(3, 20vh) / repeat(3, 20vh);
-  background-color: black;
-  border: 1px solid lightgray;
   gap: 0.25rem;
+}
+
+.board.easy {
+  border: solid 3px var(--background-color);
+}
+
+.board.hard {
+  border: solid 3px var(--tertiary-color);
+}
+
+.board.human {
+  border: solid 3px var(--secondary-color);
 }
 
 .square {
   border: none;
   background-color: white;
   font-size: 16vh;
+}
+
+.square.easy {
+  color: var(--background-color);
+}
+
+.square.hard {
+  color: var(--tertiary-color);
+}
+
+.square.human {
+  color: var(--secondary-color);
 }
 
 .square:hover {

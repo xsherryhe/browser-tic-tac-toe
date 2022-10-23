@@ -1,6 +1,7 @@
 const display = (function () {
   //update and cache DOM
-  const newGameButtons = document.querySelectorAll('.new-game'),
+  const headerElement = document.querySelector('header'),
+        newGameButtons = document.querySelectorAll('.new-game'),
         resetButton = document.querySelector('.reset'),
         resetGameButton = document.querySelector('.reset-game'),
         infoContainer = document.querySelector('.info-container'),
@@ -17,11 +18,13 @@ const display = (function () {
         nameInputElement = selector => document.querySelector(`.player-${selector}-field input`);
 
   function renderNewGameButtons() {
+    _removePageTheme();
     _hideElement(resetButton);
     _renderPageElements(...newGameButtons);
   }
 
   function renderGameSetUp(game) {
+    _setPageTheme(game.type, game.mode);
     _renderElement(resetButton);
     _renderPageElements([...userInputsContainers].find(container => container.dataset.type == game.type));
   }
@@ -33,7 +36,7 @@ const display = (function () {
           contentElement = document.createElement('div'),
           footerElement = document.createElement('h3');
     headingElement.textContent = 'Randomly assigning roles...';
-    game.players.forEach(player => {
+    game.players.forEach(player => { 
       const playerRoleElement = document.createElement('p');
       playerRoleElement.textContent =
         `${player.type == 'computer' ? `${player.name} is` : 'You are'} the ${player.marker} player.`
@@ -79,17 +82,34 @@ const display = (function () {
   function _renderSquares(board) {
     squareElements.forEach((squareElement, i) => {
       squareElement.textContent = board.getSquare(i);
+      //if(squareElement.textContent == board.markers[0])
+        //squareElement.classList.add()
     })
   }
 
   function _createInitialSquares() {
     return [...new Array(9)].map((_, i) => {
       const squareElement = document.createElement('button');
-      squareElement.classList.add('square');
+      squareElement.classList.add('square', 'no-theme');
       squareElement.dataset.index = i;
       squareElement.textContent = ' ';
       boardElement.appendChild(squareElement);
       return squareElement;
+    })
+  }
+
+  function _setPageTheme(type, mode) {
+    [headerElement, ...userInputsContainers, infoContainer, boardElement, ...squareElements].forEach(element => {
+      element.classList.remove('no-theme', 'easy', 'hard', 'computer', 'human');
+      element.classList.add(type);
+      if(mode) element.classList.add(mode);
+    })
+  }
+
+  function _removePageTheme() {
+    [headerElement, ...userInputsContainers, infoContainer, boardElement, ...squareElements].forEach(element => {
+      element.classList.add('no-theme');
+      element.classList.remove('easy', 'hard', 'computer', 'human');
     })
   }
 
