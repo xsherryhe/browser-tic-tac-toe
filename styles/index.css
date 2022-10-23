@@ -11,7 +11,7 @@ header {
   grid-template-columns: 1fr max-content 1fr;
   justify-items: start;
   align-items: center;
-  padding: 0 1rem;
+  padding: 0.5rem 1.5rem;
 }
 
 header h1 {
@@ -27,6 +27,10 @@ main {
   min-height: 60vh;
 }
 
+p {
+  margin: 0;
+}
+
 button {
   cursor: pointer;
   padding: 0.5rem 1rem;
@@ -35,6 +39,12 @@ button {
 input {
   padding: 0.3rem;
   min-width: 18rem;
+}
+
+.new-game-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 .new-game {
@@ -62,6 +72,35 @@ input {
 
 .submit {
   padding: 0.5rem 2.5rem;
+}
+
+.info-container {
+  box-shadow: 0 0 5px black;
+  border-radius: 0.2rem;
+  padding: 1rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.info h2 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.info h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.info p {
+  line-height: 1.5rem;
 }
 
 .board-header {

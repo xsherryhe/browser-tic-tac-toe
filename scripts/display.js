@@ -26,20 +26,25 @@ const display = (function () {
     _renderPageElements([...userInputsContainers].find(container => container.dataset.type == game.type));
   }
 
-  function renderGameInfo(game) {
+  async function renderGameInfo(game) {
     _renderPageElements(infoContainer);
     infoElement.textContent = '';
-    const [p1, p2] = [...new Array(2)].map(_ => document.createElement('p'));
-    p1.textContent = 'By random determination:';
-    p2.textContent = 'X always goes first!';
-    infoElement.appendChild(p1);
-    game.players.forEach((player) => {
+    const headingElement = document.createElement('h2'),
+          contentElement = document.createElement('div'),
+          footerElement = document.createElement('h3');
+    headingElement.textContent = 'Randomly assigning roles...';
+    game.players.forEach(player => {
       const playerRoleElement = document.createElement('p');
       playerRoleElement.textContent =
         `${player.type == 'computer' ? `${player.name} is` : 'You are'} the ${player.marker} player.`
-      infoElement.appendChild(playerRoleElement);
+      contentElement.appendChild(playerRoleElement);
     })
-    infoElement.appendChild(p2);
+    footerElement.textContent = 'X always goes first!';
+
+    infoElement.appendChild(headingElement);
+    await new Promise(r => setTimeout(r, 1000));
+    [contentElement, footerElement].forEach(element => infoElement.appendChild(element));
+    _renderElement(infoContinueButton);
   }
 
   function renderGame(game) {
@@ -102,7 +107,7 @@ const display = (function () {
   }
 
   function _hideAllExcept(...elements) {
-    [...newGameButtons, ...userInputsContainers, resetGameButton,
+    [...newGameButtons, ...userInputsContainers, resetGameButton, infoContinueButton,
       infoContainer, messageContainer, boardElement].forEach(element => {
         if (!elements.includes(element)) 
           _hideElement(element);
