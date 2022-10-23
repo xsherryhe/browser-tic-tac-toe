@@ -19,7 +19,8 @@ const events = (function () {
   //bind events
   function _bindInitial() {
     display.newGameButtons.forEach(button => button.addEventListener('click', ticTacToe.startNewGame.bind(ticTacToe)));
-    display.resetGameButton.addEventListener('click', ticTacToe.selectNewGame.bind(ticTacToe));
+    ['resetButton', 'resetGameButton'].forEach(button => 
+      display[button].addEventListener('click', ticTacToe.selectNewGame.bind(ticTacToe)));
   }
   _bindInitial();
 

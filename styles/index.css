@@ -4,9 +4,18 @@ html {
 
 body {
   font-family: Tahoma, Geneva, Verdana, sans-serif;
-  display: flex;
-  flex-direction: column;
+}
+
+header {
+  display: grid;
+  grid-template-columns: 1fr max-content 1fr;
+  justify-items: start;
   align-items: center;
+  padding: 0 1rem;
+}
+
+header h1 {
+  grid-column: 2 / span 1;
 }
 
 main {

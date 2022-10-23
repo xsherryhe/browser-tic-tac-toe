@@ -1,24 +1,27 @@
 const display = (function () {
   //update and cache DOM
   const newGameButtons = document.querySelectorAll('.new-game'),
-    resetGameButton = document.querySelector('.reset-game'),
-    infoContainer = document.querySelector('.info-container'),
-    infoElement = infoContainer.querySelector('.info'),
-    infoContinueButton = infoContainer.querySelector('.continue'),
-    messageContainer = document.querySelector('.message-container'),
-    messageRecipientElement = messageContainer.querySelector('.message-recipient'),
-    messageElement = messageContainer.querySelector('.message'),
-    boardElement = document.querySelector('.board'),
-    squareElements = _createInitialSquares(),
-    userInputsContainers = document.querySelectorAll('.user-inputs-container'),
-    userInputsSubmitButton = type => document.querySelector(`.user-inputs-container[data-type=${type}] .submit`),
-    nameInputElement = selector => document.querySelector(`.player-${selector}-field input`);
+        resetButton = document.querySelector('.reset'),
+        resetGameButton = document.querySelector('.reset-game'),
+        infoContainer = document.querySelector('.info-container'),
+        infoElement = infoContainer.querySelector('.info'),
+        infoContinueButton = infoContainer.querySelector('.continue'),
+        messageContainer = document.querySelector('.message-container'),
+        messageRecipientElement = messageContainer.querySelector('.message-recipient'),
+        messageElement = messageContainer.querySelector('.message'),
+        boardElement = document.querySelector('.board'),
+        squareElements = _createInitialSquares(),
+        userInputsContainers = document.querySelectorAll('.user-inputs-container'),
+        userInputsSubmitButton = type => document.querySelector(`.user-inputs-container[data-type=${type}] .submit`),
+        nameInputElement = selector => document.querySelector(`.player-${selector}-field input`);
 
   function renderNewGameButtons() {
+    _hideElement(resetButton);
     _renderPageElements(...newGameButtons);
   }
 
   function renderGameSetUp(game) {
+    _renderElement(resetButton);
     _renderPageElements([...userInputsContainers].find(container => container.dataset.type == game.type));
   }
 
@@ -45,7 +48,7 @@ const display = (function () {
   }
 
   function renderResetGame() {
-    resetGameButton.classList.remove('hidden');
+    _renderElement(resetGameButton);
   }
 
   function renderSquareTakenMessage() {
@@ -84,20 +87,28 @@ const display = (function () {
     })
   }
 
+  function _renderElement(element) {
+    element.classList.remove('hidden');
+  }
+
+  function _hideElement(element) {
+    element.classList.add('hidden');
+  }
+
   function _renderPageElements(...elements) {
     _hideAllExcept(...elements);
-    elements.forEach(element => element.classList.remove('hidden'));
+    elements.forEach(element => _renderElement(element));
   }
 
   function _hideAllExcept(...elements) {
     [...newGameButtons, ...userInputsContainers, resetGameButton,
       infoContainer, messageContainer, boardElement].forEach(element => {
-        if (!elements.includes(element))
-          element.classList.add('hidden');
+        if (!elements.includes(element)) 
+          _hideElement(element);
       })
   }
 
-  return { newGameButtons, resetGameButton, infoContinueButton,
+  return { newGameButtons, resetButton, resetGameButton, infoContinueButton,
            squareElements, userInputsSubmitButton, nameInputElement,
            renderNewGameButtons, renderGameSetUp, renderGameInfo, renderGame, renderResetGame,
            renderSquareTakenMessage, renderWinMessage, renderTieMessage };
