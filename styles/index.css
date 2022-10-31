@@ -190,7 +190,7 @@ input {
 
 .board {
   display: grid;
-  grid-template: repeat(3, min(20vw, 20vh)) / repeat(3, min(20vw, 20vh));
+  grid-template: repeat(3, min(25vw, 20vh)) / repeat(3, min(25vw, 20vh));
   gap: 0.25rem;
 }
 
@@ -256,6 +256,10 @@ input {
 }
 
 @media (max-width: 465px) {
+  main {
+    justify-content: start;
+  }
+
   header {
     grid-template: max-content 1fr / 1fr;
     gap: 0;
