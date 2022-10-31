@@ -267,22 +267,25 @@ input {
 }
 
 @media (max-width: 410px) {
+  main {
+    justify-content: start;
+  }
+
   header {
-    padding: 0 0.75rem;
+    padding: 0 0.5rem;
   }
 
   header h1 {
-    font-size: 1.25rem;
+    font-size: 1.15rem;
   }
 
   header.no-theme h1 {
-    font-size: 1.5rem;
+    font-size: 1.45rem;
   }
 
   .reset, .reset-game {
     padding: 0.25rem 0.5rem;
     font-size: 0.9rem;
-    border: 2px solid white;
   }
 
   .reset {
@@ -291,6 +294,7 @@ input {
 
   .new-game {
     font-size: 1rem;
+    padding: 1rem;
   }
 
   input {
@@ -301,7 +305,15 @@ input {
     padding: 1rem;
   }
 
+  .info h2 {
+    font-size: 1.1rem;
+  }
+
+  .info p {
+    font-size: 0.95rem;
+  }
+
   .message-container {
-    font-size: 1rem;
+    font-size: 0.9rem;
   }
 }
