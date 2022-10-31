@@ -190,7 +190,7 @@ input {
 
 .board {
   display: grid;
-  grid-template: repeat(3, 20vh) / repeat(3, 20vh);
+  grid-template: repeat(3, min(26vw, 20vh)) / repeat(3, min(26vw, 20vh));
   gap: 0.25rem;
 }
 
@@ -210,7 +210,7 @@ input {
   padding: 0.25rem;
   border: none;
   background-color: white;
-  font-size: 16vh;
+  font-size: min(22vw, 16vh);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -303,13 +303,5 @@ input {
 
   .message-container {
     font-size: 1rem;
-  }
-
-  .board {
-    grid-template: repeat(3, 18vh) / repeat(3, 18vh);
-  }
-
-  .square {
-    font-size: 14vh;
   }
 }
