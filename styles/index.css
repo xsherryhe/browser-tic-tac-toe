@@ -190,7 +190,7 @@ input {
 
 .board {
   display: grid;
-  grid-template: repeat(3, min(25vw, 20vh)) / repeat(3, min(25vw, 20vh));
+  grid-template: repeat(3, min(24vw, 20vh)) / repeat(3, min(24vw, 20vh));
   gap: 0.25rem;
 }
 
