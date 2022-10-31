@@ -56,7 +56,7 @@ main {
   justify-content: center;
   align-items: center;
   min-height: 60vh;
-  padding: 5vh 0.25rem;
+  padding: 5vh 0.5rem;
 }
 
 p {
@@ -190,7 +190,7 @@ input {
 
 .board {
   display: grid;
-  grid-template: repeat(3, 20vh) / repeat(3, 20vh);
+  grid-template: repeat(3, min(28vw, 20vh)) / repeat(3, min(28vw, 20vh));
   gap: 0.25rem;
 }
 
@@ -242,7 +242,7 @@ input {
   }
 
   header h1 {
-    font-size: 1.5rem;
+    font-size: 1.75rem;
   }
 
   .reset, .reset-game {
@@ -250,33 +250,24 @@ input {
     border: 2px solid white;
   }
 
-  .board-header {
-    min-height: 0;
-    margin-bottom: 0.25rem;
-    flex-direction: column;
-  }
-
   .message-container {
     font-size: 1.25rem;
   }
-
-  .reset-game {
-    position: absolute;
-    bottom: 3vh;
-  }
 }
 
-@media (max-width: 410px) {
+@media (max-width: 465px) {
   header {
-    padding: 0 0.75rem;
+    grid-template: max-content 1fr / 1fr;
+    gap: 0;
+    padding: 0.5rem;
+    min-height: 3.75rem;
   }
 
   header h1 {
+    grid-column: 1;
+    grid-row: 2;
     font-size: 1.25rem;
-  }
-
-  header.no-theme h1 {
-    font-size: 1.5rem;
+    margin: 0;
   }
 
   .reset, .reset-game {
@@ -287,29 +278,71 @@ input {
 
   .reset {
     justify-self: center;
+    margin-bottom: 0.5rem;
   }
 
   .new-game {
     font-size: 1rem;
+    padding: 0.5rem;
+    margin: 0 0.5rem;
+    min-height: 4rem;
+  }
+
+  .user-inputs-container, .info-container {
+    box-sizing: border-box;
+    border-left: none;
+    border-right: none;
+    min-width: 100vw;
+  }
+
+  .fields {
+    align-self: stretch;
   }
 
   input {
-    min-width: 15rem;
+    min-width: 0;
   }
 
   .info-container {
-    padding: 1rem;
+    padding: 1rem 0.75rem;
+    align-items: center;
+  }
+
+  .info-container h2, .info-container h3 {
+    font-size: 1rem;
+  }
+
+  .info-container p {
+    font-size: 0.9rem;
+  }
+
+  .board-header {
+    min-height: 2.3rem;
+    margin-bottom: 0.25rem;
+    flex-direction: column;
+  }
+
+  .reset-game {
+    position: absolute;
+    bottom: 3vh;
   }
 
   .message-container {
     font-size: 1rem;
-  }
-
-  .board {
-    grid-template: repeat(3, 18vh) / repeat(3, 18vh);
+    text-align: center;
   }
 
   .square {
-    font-size: 14vh;
+    font-size: min(18vh, 18vw);
+  }
+}
+
+@media (max-width: 245px) {
+  header h1 {
+    font-size: 1rem;
+  }
+
+  .info-container h2, .info-container h3 {
+    font-size: 0.85rem;
   }
 }
