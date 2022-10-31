@@ -55,14 +55,14 @@ function ComputerPlayer(marker, mode) {
 function HumanPlayer(marker, index, nameInputSelector = index) {
   const prototype = Player(marker);
   const name = `Player ${index + 1}`,
-    turnMessage = "it's your turn.";
+        turnMessage = "it's your turn.";
 
   function setName() {
     this.name = display.nameInputElement(nameInputSelector).value || this.name;
   }
 
   function messageRecipient() {
-    return `${this.name} (${marker}),`;
+    return `${this.name.length <= 20 ? this.name : this.name.slice(0, 20) + '...'} (${marker}),`;
   }
 
   function selectSquare(info) {

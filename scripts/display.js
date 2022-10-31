@@ -1,7 +1,8 @@
 const display = (function () {
   //update and cache DOM
   const headerElement = document.querySelector('header'),
-        newGameButtons = document.querySelectorAll('.new-game'),
+        newGameButtonsContainer = document.querySelector('.new-game-buttons'),
+        newGameButtons = newGameButtonsContainer.querySelectorAll('.new-game'),
         resetButton = document.querySelector('.reset'),
         resetGameButton = document.querySelector('.reset-game'),
         infoContainer = document.querySelector('.info-container'),
@@ -10,6 +11,7 @@ const display = (function () {
         messageContainer = document.querySelector('.message-container'),
         messageRecipientElement = messageContainer.querySelector('.message-recipient'),
         messageElement = messageContainer.querySelector('.message'),
+        boardHeader = document.querySelector('.board-header'),
         boardElement = document.querySelector('.board'),
         squareElements = _createInitialSquares(),
         userInputsContainers = document.querySelectorAll('.user-inputs-container'),
@@ -20,7 +22,7 @@ const display = (function () {
   function renderNewGameButtons() {
     _removePageTheme();
     _hideElement(resetButton);
-    _renderPageElements(...newGameButtons);
+    _renderPageElements(newGameButtonsContainer);
   }
 
   function renderGameSetUp(game) {
@@ -51,7 +53,7 @@ const display = (function () {
   }
 
   function renderGame(game) {
-    _renderPageElements(messageContainer, boardElement);
+    _renderPageElements(boardHeader, boardElement);
     _renderPlayerTurnMessage(game.currPlayer());
     _renderSquares(game.board);
   }
@@ -92,7 +94,6 @@ const display = (function () {
       const squareElement = document.createElement('button');
       squareElement.classList.add('square', 'no-theme');
       squareElement.dataset.index = i;
-      squareElement.textContent = ' ';
       boardElement.appendChild(squareElement);
       return squareElement;
     })
@@ -127,8 +128,9 @@ const display = (function () {
   }
 
   function _hideAllExcept(...elements) {
-    [...newGameButtons, ...userInputsContainers, resetGameButton, infoContinueButton,
-      infoContainer, messageContainer, boardElement].forEach(element => {
+    [newGameButtonsContainer, ...userInputsContainers, 
+     resetGameButton, infoContinueButton,
+     infoContainer, boardHeader, boardElement].forEach(element => {
         if (!elements.includes(element)) 
           _hideElement(element);
       })

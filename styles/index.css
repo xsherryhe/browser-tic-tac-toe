@@ -34,13 +34,12 @@ body {
 
 header {
   display: grid;
-  grid-template-columns: 1fr max-content 1fr;
-  justify-items: start;
+  grid-template-columns: max-content 1fr;
+  justify-items: center;
   align-items: center;
   padding: 0 1.5rem;
   background-color: var(--background-color);
   border-bottom: 3px solid white;
-  gap: 1rem;
 }
 
 header.no-theme {
@@ -56,7 +55,8 @@ main {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  min-height: 70vh;
+  min-height: 60vh;
+  padding: 5vh 0.25rem;
 }
 
 p {
@@ -174,7 +174,6 @@ input {
 }
 
 .board-header {
-  margin-top: 1rem;
   min-height: 3rem;
   display: flex;
   align-items: center;
@@ -208,9 +207,13 @@ input {
 }
 
 .square {
+  padding: 0.25rem;
   border: none;
   background-color: white;
   font-size: 16vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .square.easy {
@@ -231,4 +234,82 @@ input {
 
 .hidden {
   display: none;
+}
+
+@media (max-width: 575px) {
+  html {
+    font-size: 16px;
+  }
+
+  header h1 {
+    font-size: 1.5rem;
+  }
+
+  .reset, .reset-game {
+    padding: 0.25rem 1rem;
+    border: 2px solid white;
+  }
+
+  .board-header {
+    min-height: 0;
+    margin-bottom: 0.25rem;
+    flex-direction: column;
+  }
+
+  .message-container {
+    font-size: 1.25rem;
+  }
+
+  .reset-game {
+    position: absolute;
+    bottom: 3vh;
+  }
+}
+
+@media (max-width: 410px) {
+  header {
+    padding: 0 0.75rem;
+  }
+
+  header h1 {
+    font-size: 1.25rem;
+  }
+
+  header.no-theme h1 {
+    font-size: 1.5rem;
+  }
+
+  .reset, .reset-game {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.9rem;
+    border: 2px solid white;
+  }
+
+  .reset {
+    justify-self: center;
+  }
+
+  .new-game {
+    font-size: 1rem;
+  }
+
+  input {
+    min-width: 15rem;
+  }
+
+  .info-container {
+    padding: 1rem;
+  }
+
+  .message-container {
+    font-size: 1rem;
+  }
+
+  .board {
+    grid-template: repeat(3, 18vh) / repeat(3, 18vh);
+  }
+
+  .square {
+    font-size: 14vh;
+  }
 }
